@@ -43,7 +43,7 @@ public class Main extends JPanel {
             g.fillOval(coordsX[i], coordsY[i], 10, 10);
         }
 
-        g.setColor(Color.RED);
+        g.setColor(Color.BLUE);
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix.length; j++) {
                 if (matrix[i][j] == 1) {
@@ -56,6 +56,7 @@ public class Main extends JPanel {
     public static void main(String[] args) throws InterruptedException {
         Main htd = new Main();
 
+        //Вводим матрицу смежности
         int[][] adj = {
                 {0,1,0,0,1,0},
                 {1,0,1,0,1,0},
@@ -64,42 +65,45 @@ public class Main extends JPanel {
                 {1,1,0,1,0,0},
                 {0,0,0,1,0,0}
         };
+        //С её помощью генерируем и рисуем новый граф
         Graph firstGraph = new Graph(adj, adj.length);
         firstGraph.printGraph();
-        System.out.println("Incidence matrix:");
+        //Считаем и выводим матрицу инцидентности
+        System.out.println("\nIncidence matrix:");
         Printer.printMatrix(firstGraph.writeIncidenceMatrix());
-        System.out.println("Adjacency matrix:");
+        //Выводим матрицу инцидентности
+        System.out.println("\nAdjacency matrix:");
         Printer.printMatrix(firstGraph.writeAdjacencyMatrix());
-        System.out.println("Adjacency list:");
+
+        //Список смежности
+        System.out.println("\nAdjacency list:");
         Printer.printMatrix(firstGraph.writeAdjacencyList());
-        System.out.println("Edges list:");
+        //Список дуг
+        System.out.println("\nEdges list:");
         Printer.printEdgesArray(firstGraph.writeEdges());
 
+        //Запоминаем заданный граф и считываем его матрицу смежности
         Main.graph = firstGraph;
         Main.matrix = firstGraph.writeAdjacencyMatrix();
         htd.repaint();
 
         Thread.sleep(1500);
 
-        Vertex vertex = new Vertex('X');
+        //Добавляем новую вершину к графу
+        Vertex vertex = new Vertex('Z');
         firstGraph.addVertex(vertex);
         Edge edge = new Edge(firstGraph.getVertices()[0], firstGraph.getVertices()[firstGraph.getVertices().length-1]);
         firstGraph.addEdge(edge);
-
+        //И рисуем то, что получилось
         firstGraph.printGraph();
-        System.out.println("Incidence matrix:");
-        Printer.printMatrix(firstGraph.writeIncidenceMatrix());
-        System.out.println("Adjacency matrix:");
-        Printer.printMatrix(firstGraph.writeAdjacencyMatrix());
-        System.out.println("Adjacency list:");
-        Printer.printMatrix(firstGraph.writeAdjacencyList());
-        System.out.println("Edges list:");
-        Printer.printEdgesArray(firstGraph.writeEdges());
 
-        System.out.println("Width graph traversal");
+        //Выполняем алгоритм обхода графа в ширину без использования дополнительной памяти.
+        System.out.println("\nWidth graph traversal:");
         char[] bfs = firstGraph.breadthFirstSearch(firstGraph.writeAdjacencyMatrix());
         System.out.println(bfs);
 
+        //Теперь раскраска графа. Используется т.н. "жадный" алгоритм с коэффициентами.
+        System.out.println("\nGraph coloring:");
         firstGraph.greedyColoring(firstGraph.writeAdjacencyList());
 
         Main.graph = firstGraph;

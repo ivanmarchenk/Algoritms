@@ -16,6 +16,7 @@ public class Graph {
 
     private boolean[] isVisited;
 
+
     public Graph(Graph graph) {
         this.vertices = graph.getVertices();
         this.edges = graph.getEdges();
@@ -57,6 +58,7 @@ public class Graph {
         }
     }
 
+    /*
     public Graph(int[][] incidenceMatrix, int n, int k){
         this.vertices = new Vertex[k];
         this.edges = new Edge[0];
@@ -83,7 +85,9 @@ public class Graph {
             this.edges[this.edges.length - 1] = new Edge(vertexOne, vertexTwo);
         }
     }
+    */
 
+    /*
     public Graph(int[][] adjacencyList) {
         this.vertices = new Vertex[adjacencyList.length];
         this.edges = new Edge[0];
@@ -109,7 +113,9 @@ public class Graph {
             }
         }
     }
+    */
 
+    /*
     public Graph(Edge[] edges) {
         this.edges = edges;
         this.vertices = new Vertex[0];
@@ -136,10 +142,11 @@ public class Graph {
             }
         }
     }
-
+    */
     public Vertex[] getVertices(){
         return vertices;
     }
+
 
     public Edge[] getEdges(){
         return edges;
@@ -268,10 +275,10 @@ public class Graph {
         return resultIndex;
     }
 
+    //Обход в ширину
     public char[] breadthFirstSearch(int[][] adjacencyMatrix){
         char[] result = new char[this.vertices.length];
         int[] indexes = new int[this.vertices.length];
-        int[][] matrix = adjacencyMatrix;
         this.isVisited = new boolean[this.vertices.length];
         Arrays.fill(this.isVisited, false);
         int cursor = 0;
@@ -281,7 +288,7 @@ public class Graph {
         indexes[cursor] = 0;
         result[count] = this.vertices[count++].getName();
         while (count < result.length) {
-            while ((nextIndex = getIndexNextVertex(indexes[cursor], matrix)) != -1) {
+            while ((nextIndex = getIndexNextVertex(indexes[cursor], adjacencyMatrix)) != -1) {
                 this.isVisited[nextIndex] = true;
                 indexes[count] = nextIndex;
                 result[count++] = this.vertices[nextIndex].getName();
@@ -293,44 +300,48 @@ public class Graph {
     }
 
     public void printGraph(){
-        System.out.print("Vertex's: ");
+        System.out.print("\nVertexes: ");
         for (Vertex vertex : this.vertices) {
             System.out.print(vertex.getName() + ";");
         }
         System.out.println();
 
-        System.out.print("Edge's: ");
+        System.out.print("\nEdges: ");
         for (Edge edge : this.edges) {
             System.out.print("(" + edge.getFromVertex().getName() + "," + edge.getToVertex().getName() + ");");
         }
         System.out.println();
     }
 
+    //Раскраска графа (улучшенный "жадный" алгоритм)
     public void greedyColoring(int[][] adjacencyList){
         int[] result = new int[this.vertices.length];
         Arrays.fill(result, -1);
         result[0] = 0;
         boolean[] available = new boolean[this.vertices.length];
         Arrays.fill(available, true);
+        //проходим все вершины графа
+        for (int k = 1; k < this.vertices.length; k++){
 
-        for (int u = 1; u < this.vertices.length; u++){
-
-            for(int i = 0; i < adjacencyList[u].length; i++){
-                if(result[adjacencyList[u][i]-1] != -1) {
-                    available[result[adjacencyList[u][i]-1]] = false;
+            for(int i = 0; i < adjacencyList[k].length; i++){
+                //переопределяем последовательность
+                if(result[adjacencyList[k][i]-1] != -1) {
+                    available[result[adjacencyList[k][i]-1]] = false;
                 }
             }
-
+            //назначаем текущей вершине коэффициент доступного цвета
             int cr;
             for(cr = 0; cr < this.vertices.length; cr++){
+                //когда вершины кончаются, выходим из цикла
                 if (available[cr])
                     break;
             }
-            result[u] = cr;
+            //меняем цвет
+            result[k] = cr;
         }
-
-        for (int u = 0; u < this.vertices.length; u++)
-            System.out.println("Vertex " + this.vertices[u].getName() + " --->  Color "
-                    + result[u]);
+        //присваиваем каждой вершине соответствующий цвет
+        for (int k = 0; k < this.vertices.length; k++)
+            System.out.println("Vertex " + this.vertices[k].getName() + " --->  Color "
+                    + result[k]);
     }
 }

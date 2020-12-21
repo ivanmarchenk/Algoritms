@@ -3,12 +3,6 @@ package by.bsu.algorithms.printer;
 import by.bsu.algorithms.classes.Edge;
 
 public class Printer {
-    public static void printMatrix(int[]matrix) {
-        for (int value : matrix) {
-            System.out.print(value + ";");
-        }
-        System.out.println();
-    }
 
     public static void printMatrix(int[][]matrix){
         for (int[] ints : matrix) {
