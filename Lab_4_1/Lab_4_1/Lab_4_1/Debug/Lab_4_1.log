@@ -1,0 +1,4 @@
+﻿  Lab_4_1.cpp
+C:\data\Velchenko_labs\Algoritms\Lab_4_1\Lab_4_1\Lab_4_1\Lab_4_1.cpp(103,14): warning C4018: >: несоответствие типов со знаком и без знака
+C:\data\Velchenko_labs\Algoritms\Lab_4_1\Lab_4_1\Lab_4_1\Lab_4_1.cpp(136,12): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+  Lab_4_1.vcxproj -> C:\data\Velchenko_labs\Algoritms\Lab_4_1\Lab_4_1\Debug\Lab_4_1.exe
