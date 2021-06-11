@@ -1,0 +1,77 @@
+;; Включается ли множество sa в множество sb
+ 
+(defun included (sa sb)
+  (if (iter (for a in sa) (unless (member a sb) (return t))) nil t))
+ 
+(included '(1 2 3) '(1 2 3 4 5))
+==> T
+ 
+(included '(1 2 3 7) '(1 2 3 4 5))
+==> NIL
+ 
+;; Все подмножества конечного множества
+ 
+(defun allsubsets (s)
+  (cond ((null s) (list nil))
+        (t (let ((ss (allsubsets (cdr s))))
+                 (append ss (mapcar (lambda (x) (cons (car s) x)) ss))))))
+ 
+(allsubsets '(1 2 3))
+
+==> (NIL (3) (2) (2 3) (1) (1 3) (1 2) (1 2 3))
+ 
+;; Разность множеств
+ 
+(defun diff (sa sb)
+  (remove-if (lambda (x) (member x sb)) sa))
+ 
+ 
+(diff '(1 2 3 4) '(3 4 5 6))
+
+==> (1 2)
+ 
+;; Расщепление множества на пары множеств
+ 
+(defun splitsets (s)
+  (let ((ss (allsubsets s)))
+      (mapcar (lambda (x) (list x (diff s x))) ss)))
+ 
+ 
+(splitsets '(1 2 3))
+
+==> ((NIL (1 2 3)) ((3) (1 2)) ((2) (1 3)) ((2 3) (1)) ((1) (2 3)) ((1 3) (2)) ((1 2) (3)) ((1 2 3) NIL))
+ 
+;; Очистка списка пар множеств от повторений
+ 
+(defun clear (ss)
+  (cond ((null ss) nil)
+        (t (let ((p (car ss)))
+             (cons p (remove (list (cadr p) (car p)) (clear (cdr ss))))))))
+ 
+(clear (splitsets '(1 2 3)))
+
+==> ((NIL (1 2 3)) ((3) (1 2)) ((2) (1 3)) ((2 3) (1)))
+ 
+(clear (splitsets '(1 2 3 4)))
+
+==> ((NIL (1 2 3 4)) ((4) (1 2 3)) ((3) (1 2 4)) ((3 4) (1 2)) ((2) (1 3 4)) ((2 4) (1 3)) ((2 3) (1 4)) ((2 3 4) (1)))
+
+;; Все разбиения множества на два подмножества
+ 
+(defun split (s)
+  (clear (splitsets s)))
+ 
+;; Решение задачи (перечисляет все разбиения, удовлетворяющие заданному условию)
+  
+(defun task (ini-set list-subsets)
+  (let ((ss (split ini-set))
+        (r  nil)) 
+     (iter (for pair in ss)
+         (if (iter (for c in list-subsets)
+                 (when (or (included c (car pair)) (included c (cadr pair))) (return t)))          
+             nil (collecting pair into r)))
+      r))
+ 
+(task '(a b c d e f) '((a e) (b f)))
+
+==> (((E F) (A B C D)) ((D E F) (A B C)) ((C E F) (A B D)) ((C D E F) (A B)) ((B E) (A C D F)) ((B D E) (A C F)) ((B C E) (A D F)) ((B C D E) (A F)))
